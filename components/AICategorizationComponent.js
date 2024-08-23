@@ -8,13 +8,7 @@ const AICategorizationComponent = ({ onCategorize }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await fetch('/api/categorize-task', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ task }),
-      });
-      const data = await response.json();
-      onCategorize({ title: task, category: data.category });
+      await onCategorize({ title: task });
       setTask('');
     } catch (error) {
       console.error('Error categorizing task:', error);
@@ -23,19 +17,19 @@ const AICategorizationComponent = ({ onCategorize }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mt-4">
-      <div className="flex items-center">
+    <form onSubmit={handleSubmit} className="mb-8">
+      <div className="flex items-center border-b-2 border-teal-500 py-2">
         <input
           type="text"
           value={task}
           onChange={(e) => setTask(e.target.value)}
           placeholder="Enter a new task"
-          className="flex-grow px-4 py-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
         />
         <button
           type="submit"
           disabled={isLoading || !task}
-          className="px-4 py-2 bg-blue-500 text-white rounded-r-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+          className="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
         >
           {isLoading ? 'Adding...' : 'Add Task'}
         </button>

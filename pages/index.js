@@ -13,15 +13,18 @@ export default function Home() {
   const fetchTasks = async () => {
     try {
       const res = await fetch('/api/tasks');
+      if (!res.ok) {
+        throw new Error('Failed to fetch tasks');
+      }
       const data = await res.json();
       if (data.success) {
         setTasks(data.data);
       } else {
-        setError('Failed to fetch tasks');
+        throw new Error(data.error || 'Failed to fetch tasks');
       }
     } catch (err) {
       console.error('Error fetching tasks:', err);
-      setError('Failed to fetch tasks');
+      setError(err.message || 'Failed to fetch tasks');
     }
   };
 
@@ -34,15 +37,22 @@ export default function Home() {
         },
         body: JSON.stringify(task),
       });
+      
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Failed to add task');
+      }
+
       const data = await res.json();
       if (data.success) {
         setTasks(prevTasks => [...prevTasks, data.data]);
+        setError(''); // Clear any previous errors
       } else {
-        setError('Failed to add task');
+        throw new Error(data.error || 'Failed to add task');
       }
     } catch (err) {
       console.error('Error adding task:', err);
-      setError('Failed to add task');
+      setError(err.message || 'Failed to add task');
     }
   };
 
